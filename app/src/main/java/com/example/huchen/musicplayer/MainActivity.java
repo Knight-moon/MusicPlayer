@@ -35,12 +35,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             musicService = null;
         }
     };
+
     private void bindServiceConnection() {
         Intent intent = new Intent(MainActivity.this, MusicService.class);
         startService(intent);
         bindService(intent, sc, this.BIND_AUTO_CREATE);
     }
+
     public android.os.Handler handler = new android.os.Handler();
+
     public Runnable runnable = new Runnable() {
         @Override
         public void run() {
@@ -87,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         bindServiceConnection();
 
         seekBar = (SeekBar)this.findViewById(R.id.MusicSeekBar);
+        seekBar.setProgress(0);
         seekBar.setProgress(musicService.mp.getCurrentPosition());
         seekBar.setMax(musicService.mp.getDuration());
 

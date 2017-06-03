@@ -32,7 +32,7 @@ public class MusicService extends Service {
     public static MediaPlayer mp = new MediaPlayer();
     public MusicService() {
         try {
-            mp.setDataSource(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Music/Music/music1.mp3");
+            mp.setDataSource(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Music/music1.mp3");
             //mp.setDataSource(Environment.getDataDirectory().getAbsolutePath()+"/You.mp3");
             mp.prepare();
             musicIndex = 1;
