@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">exp5_AfterClass</string>
+    <string name="app_name">MusicPlayer</string>
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -10,9 +10,9 @@
     <string name="btnPre">PREVIOUS</string>
     <string name="btnNext">NEXT</string>
 
-    <string name="play">Play</string>
-    <string name="playing">Playing</string>
-    <string name="pause">Pause</string>
+    <string name="play">播放</string>
+    <string name="playing">播放中</string>
+    <string name="pause">暂停</string>
 
     <string name="musicDir">/Music/music1.mp3</string>
     <string name="musicDir1">/Music/music1.mp3</string>

@@ -16,9 +16,11 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-
+    //public List<Song> list;
     private MusicService musicService;
     private SeekBar seekBar;
     private TextView musicStatus, musicTime;
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     };
 
+
     private void bindServiceConnection() {
         Intent intent = new Intent(MainActivity.this, MusicService.class);
         startService(intent);
@@ -48,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         @Override
         public void run() {
             if(musicService.mp.isPlaying()) {
-                musicStatus.setText(getResources().getString(R.string.playing));
+                musicStatus.setText(musicService.getName());
                 btnPlayOrPause.setText(getResources().getString(R.string.pause).toUpperCase());
             } else {
                 musicStatus.setText(getResources().getString(R.string.pause));
@@ -84,10 +87,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Log.d("hint", "ready to new MusicService");
-        musicService = new MusicService();
-        Log.d("hint", "finish to new MusicService");
-        bindServiceConnection();
+        //list = new ArrayList<>();
+        //list = MusicUtils.getMusicData(this);
+        //Log.d("hint", musicService.getPackageName());
+        musicService = new MusicService(this);
 
         seekBar = (SeekBar)this.findViewById(R.id.MusicSeekBar);
         seekBar.setProgress(0);
@@ -105,9 +108,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onResume() {
         if(musicService.mp.isPlaying()) {
-            musicStatus.setText(getResources().getString(R.string.playing));
+            musicStatus.setText("播放中");
         } else {
-            musicStatus.setText(getResources().getString(R.string.pause));
+            musicStatus.setText("暂停");
         }
 
         seekBar.setProgress(musicService.mp.getCurrentPosition());
@@ -141,6 +144,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.btnNext:
                 musicService.nextMusic();
                 break;
+            case R.id.btnMyMusic:
+                Intent intent = new Intent();
+                intent.setClass(MainActivity.this, ListActivity.class);
+                MainActivity.this.startActivity(intent);
             default:
                 break;
         }

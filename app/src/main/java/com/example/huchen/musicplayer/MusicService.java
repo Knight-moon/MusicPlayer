@@ -5,6 +5,7 @@ package com.example.huchen.musicplayer;
  */
 
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Binder;
@@ -12,17 +13,20 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.util.Log;
 
-/**
- * Created by West on 2015/11/10.
- */
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 public class MusicService extends Service {
 
     private String[] musicDir = new String[]{Environment.getExternalStorageDirectory().getAbsolutePath()+"/Music/music1.mp3",
             Environment.getExternalStorageDirectory().getAbsolutePath()+"/Music/music2.mp3",
             Environment.getExternalStorageDirectory().getAbsolutePath()+"/Music/music3.mp3",
             Environment.getExternalStorageDirectory().getAbsolutePath() +"/Music/music4.mp3"};
-    private int musicIndex = 1;
 
+    public List<Song> list;
+    private int musicIndex = 0;
+    private int maxIndex;
     public final IBinder binder = new MyBinder();
     public class MyBinder extends Binder{
         MusicService getService() {
@@ -30,17 +34,25 @@ public class MusicService extends Service {
         }
     }
     public static MediaPlayer mp = new MediaPlayer();
-    public MusicService() {
+
+    public MusicService(Context context) {
+        list = new ArrayList<>();
+        //把扫描到的音乐赋值给list
+        list = MusicUtils.getMusicData(context);
+        Log.d("hint",list.get(0).path);
         try {
-            mp.setDataSource(Environment.getExternalStorageDirectory().getAbsolutePath()+"/Music/music1.mp3");
+            //maxIndex=list.size();
+            mp.setDataSource(list.get(musicIndex).path);
+            //Log.d("hint",list.get(1).path);
+            //mp.setDataSource(musicDir[musicIndex]);
             //mp.setDataSource(Environment.getDataDirectory().getAbsolutePath()+"/You.mp3");
             mp.prepare();
-            musicIndex = 1;
         } catch (Exception e) {
-            Log.d("hint","can't get to the song");
+            Log.d("hint","can't get song");
             e.printStackTrace();
         }
     }
+
     public void playOrPause() {
         if(mp.isPlaying()){
             mp.pause();
@@ -60,11 +72,12 @@ public class MusicService extends Service {
         }
     }
     public void nextMusic() {
-        if(mp != null && musicIndex < 3) {
+        if(mp != null && musicIndex < maxIndex) {
             mp.stop();
             try {
                 mp.reset();
-                mp.setDataSource(musicDir[musicIndex+1]);
+                mp.setDataSource(list.get(musicIndex+1).path);
+                //mp.setDataSource(musicDir[musicIndex+1]);
                 musicIndex++;
                 mp.prepare();
                 mp.seekTo(0);
@@ -80,7 +93,8 @@ public class MusicService extends Service {
             mp.stop();
             try {
                 mp.reset();
-                mp.setDataSource(musicDir[musicIndex-1]);
+                mp.setDataSource(list.get(musicIndex-1).path);
+                //mp.setDataSource(musicDir[musicIndex-1]);
                 musicIndex--;
                 mp.prepare();
                 mp.seekTo(0);
@@ -91,6 +105,7 @@ public class MusicService extends Service {
             }
         }
     }
+
     @Override
     public void onDestroy() {
         mp.stop();
@@ -98,10 +113,17 @@ public class MusicService extends Service {
         super.onDestroy();
     }
 
-    /**
-     * onBind 是 Service 的虚方法，因此我们不得不实现它。
-     * 返回 null，表示客服端不能建立到此服务的连接。
-     */
+    public String getName(){
+        return list.get(musicIndex).song;
+    }
+
+    public void startIndex(int index) throws IOException {
+        musicIndex=index;
+        mp.setDataSource(list.get(musicIndex).path);
+        mp.prepare();
+        mp.start();
+    }
+
     @Override
     public IBinder onBind(Intent intent) {
         return binder;
