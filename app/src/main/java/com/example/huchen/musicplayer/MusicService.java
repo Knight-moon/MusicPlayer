@@ -41,7 +41,7 @@ public class MusicService extends Service {
         list = MusicUtils.getMusicData(context);
         Log.d("hint",list.get(0).path);
         try {
-            //maxIndex=list.size();
+            maxIndex=list.size();
             mp.setDataSource(list.get(musicIndex).path);
             //Log.d("hint",list.get(1).path);
             //mp.setDataSource(musicDir[musicIndex]);
