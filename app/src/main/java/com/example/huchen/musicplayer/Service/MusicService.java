@@ -103,7 +103,6 @@ public class MusicService extends Service {
             }
         }
     }
-
     public void preMusic() {
         if(mp != null && musicIndex > 0) {
             mp.stop();
